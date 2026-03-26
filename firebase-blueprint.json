@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Candidate": {
+      "title": "Candidate",
+      "description": "Candidate profile data",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "mobile": { "type": "string" },
+        "email": { "type": "string" },
+        "fullName": { "type": "string" },
+        "currentLocation": { "type": "string" },
+        "preferredLocation": { "type": "string" },
+        "experienceYears": { "type": "number" },
+        "experienceMonths": { "type": "number" },
+        "currentSalary": { "type": "number" },
+        "education": {
+          "type": "object",
+          "properties": {
+            "tenth": { "type": "string" },
+            "twelfth": { "type": "string" },
+            "graduation": { "type": "string" },
+            "pg": { "type": "string" }
+          }
+        },
+        "roleDescription": { "type": "string" },
+        "skills": { "type": "array", "items": { "type": "string" } },
+        "resumeScore": { "type": "number" },
+        "isPaid": { "type": "boolean" },
+        "paidPlan": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "mobile"]
+    }
+  },
+  "firestore": {
+    "/candidates/{candidateId}": {
+      "schema": "Candidate",
+      "description": "Collection of candidate profiles"
+    }
+  }
+}
