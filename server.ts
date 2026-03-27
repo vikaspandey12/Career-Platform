@@ -1,12 +1,64 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
+import * as gemini from "./src/services/geminiServer";
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
 
   app.use(express.json());
+
+  // Gemini API Routes
+  app.post("/api/gemini/extract", async (req, res) => {
+    try {
+      const { text } = req.body;
+      const data = await gemini.extractResumeData(text);
+      res.json(data);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/gemini/salary", async (req, res) => {
+    try {
+      const { candidate } = req.body;
+      const data = await gemini.generateSalaryInsight(candidate);
+      res.json(data);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/gemini/jobs", async (req, res) => {
+    try {
+      const { candidate } = req.body;
+      const data = await gemini.matchJobs(candidate);
+      res.json(data);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/gemini/improve-desc", async (req, res) => {
+    try {
+      const { desc } = req.body;
+      const data = await gemini.improveJobDescription(desc);
+      res.json({ text: data });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/gemini/score", async (req, res) => {
+    try {
+      const { candidate } = req.body;
+      const data = await gemini.calculateResumeScore(candidate);
+      res.json(data);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   // Razorpay Order API
   app.post("/api/create-order", (req, res) => {
