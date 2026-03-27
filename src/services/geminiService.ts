@@ -31,14 +31,24 @@ export const matchJobs = async (candidate: Candidate): Promise<JobMatch[]> => {
 };
 
 export const improveJobDescription = async (desc: string): Promise<string> => {
-  const response = await fetch("/api/gemini/improve-desc", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ desc }),
-  });
-  if (!response.ok) throw new Error("Failed to improve job description");
-  const data = await response.json();
-  return data.text;
+  try {
+    const response = await fetch("/api/gemini/improve-desc", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ desc }),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Server responded with ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.text;
+  } catch (error: any) {
+    console.error("Error improving job description:", error);
+    throw new Error(error.message || "Failed to improve job description");
+  }
 };
 
 export const calculateResumeScore = async (candidate: Candidate): Promise<ResumeScore> => {
