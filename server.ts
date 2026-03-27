@@ -5,7 +5,7 @@ import * as gemini from "./src/services/geminiServer";
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   app.use(express.json());
 
@@ -41,12 +41,18 @@ async function startServer() {
   });
 
   app.post("/api/gemini/improve-desc", async (req, res) => {
+    console.log("Received request to improve job description");
     try {
       const { desc } = req.body;
+      if (!desc) {
+        return res.status(400).json({ error: "Description is required" });
+      }
       const data = await gemini.improveJobDescription(desc);
+      console.log("Successfully improved job description");
       res.json({ text: data });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("Error in /api/gemini/improve-desc:", error);
+      res.status(500).json({ error: error.message || "Internal Server Error" });
     }
   });
 
