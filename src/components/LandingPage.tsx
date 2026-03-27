@@ -15,9 +15,15 @@ const LandingPage = () => {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       toast.success('Signed in with Google! Your progress will be synced.');
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error('Failed to sign in with Google.');
+      if (error.code === 'auth/popup-closed-by-user') {
+        toast.error('Sign-in cancelled. Please try again.');
+      } else if (error.code === 'auth/unauthorized-domain') {
+        toast.error('This domain is not authorized for sign-in. Please contact support.');
+      } else {
+        toast.error('Failed to sign in with Google. Please try again.');
+      }
     }
   };
 
